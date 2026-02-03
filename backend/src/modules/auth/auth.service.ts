@@ -2,11 +2,25 @@ import bcrypt from "bcrypt";
 import { signToken } from "../../utils/jwt.js";
 
 export const registerUser = async (email: string, password: string) => {
+  /**
+   * Hash password
+   */
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // DB insert will go here later
+  /**
+   * TEMP: DB insert will come later
+   */
+  console.log("Saving user:", {
+    email,
+    hashedPassword,
+  });
 
-  const accessToken = signToken({ userId: "temp-id" }, "15m");
+  /**
+   * Generate JWT
+   */
+  const accessToken = signToken({ userId: "temp-user-id" }, "15m");
 
-  return { accessToken };
+  return {
+    accessToken,
+  };
 };
