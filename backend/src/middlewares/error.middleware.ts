@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import { AppError } from "../utils/appError.js";
 
 export const errorMiddleware = (
   err: any,
@@ -6,14 +7,25 @@ export const errorMiddleware = (
   res: Response,
   _next: NextFunction,
 ) => {
-  console.error("❌ Error:", err);
+  console.error(err);
 
-  return res.status(400).json({
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      data: null,
+      error: {
+        code: err.code,
+        message: err.message,
+      },
+    });
+  }
+
+  return res.status(500).json({
     success: false,
     data: null,
     error: {
-      code: err.code || "INTERNAL_ERROR",
-      message: err.message || "Something went wrong",
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Something went wrong",
     },
   });
 };
